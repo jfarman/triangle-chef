@@ -76,33 +76,40 @@ void ofApp::draw() {
 		float lerpPointDistance = bisectingLineLerpPoint.distance(startPoint);
 		currentLerpIndex = lerpPointDistance / triangleHeight;
 		currentLerpIndexString = ofToString(currentLerpIndex, 4);
-
-		ofSetColor(ofColor::orange);
-		ofDrawCircle(bisectingLineLerpPoint, POINT_RADIUS);
-
-		ofPolyline lineA; // todo: draw triangle using these lines instead of ofDrawTriangle()
-		lineA.addVertex(startPoint.x, startPoint.y);
-		lineA.addVertex(vertexA);
-		ofPoint interpolatedLineAPoint = (ofPoint)lineA.getPointAtIndexInterpolated(currentLerpIndex);
-
-		ofPolyline lineB;
-		lineB.addVertex(startPoint.x, startPoint.y);
-		lineB.addVertex(vertexB);
-		ofPoint interpolatedLineBPoint = (ofPoint)lineB.getPointAtIndexInterpolated(currentLerpIndex);
-
-		ofPolyline lineAB;
-		lineAB.addVertex(interpolatedLineAPoint);
-		lineAB.addVertex(interpolatedLineBPoint);
-		lineAB.draw();
-
-		ofSetColor(ofColor::lightGreen);
-		ofDrawCircle(interpolatedLineAPoint, POINT_RADIUS);
-		ofDrawCircle(interpolatedLineBPoint, POINT_RADIUS);
+		drawBisection(vertexA, vertexB);
 	}
 
 	ofSetColor(ofColor::white);
 	ofDrawBitmapString("interpolation index along bisection of triangle = " + currentLerpIndexString, 10, 25);
 }
+
+//--------------------------------------------------------------
+
+void ofApp::drawBisection(ofPoint vertexA, ofPoint vertexB) {
+
+	ofSetColor(ofColor::orange);
+	ofDrawCircle(bisectingLineLerpPoint, POINT_RADIUS);
+
+	ofPolyline lineA; // todo: draw triangle using these lines instead of ofDrawTriangle()
+	lineA.addVertex(startPoint.x, startPoint.y);
+	lineA.addVertex(vertexA);
+	ofPoint interpolatedLineAPoint = (ofPoint)lineA.getPointAtIndexInterpolated(currentLerpIndex);
+
+	ofPolyline lineB;
+	lineB.addVertex(startPoint.x, startPoint.y);
+	lineB.addVertex(vertexB);
+	ofPoint interpolatedLineBPoint = (ofPoint)lineB.getPointAtIndexInterpolated(currentLerpIndex);
+
+	ofPolyline lineAB;
+	lineAB.addVertex(interpolatedLineAPoint);
+	lineAB.addVertex(interpolatedLineBPoint);
+	lineAB.draw();
+
+	ofSetColor(ofColor::lightGreen);
+	ofDrawCircle(interpolatedLineAPoint, POINT_RADIUS);
+	ofDrawCircle(interpolatedLineBPoint, POINT_RADIUS);
+}
+
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){

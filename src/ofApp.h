@@ -49,4 +49,5 @@ class ofApp : public ofBaseApp{
 		bool shouldUpdateTriangle;
 
 		void reset();
+		void drawBisection(ofPoint vertexA, ofPoint vertexB);
 };
