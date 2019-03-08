@@ -41,10 +41,12 @@ class ofApp : public ofBaseApp{
 
 		const float POINT_RADIUS = 7.0f;
 		const float LINE_WIDTH = 3.0f;
-		const float LINE_CLICK_BUFFER = 10.0f;
+		const float CLICK_BUFFER = 7.0f;
 
 		float windowWidth;
 		float windowHeight;
 
-		bool hasWindowResized;
+		bool shouldUpdateTriangle;
+
+		void reset();
 };

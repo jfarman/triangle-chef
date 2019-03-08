@@ -2,8 +2,6 @@
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	bool shouldUpdateTriangle = false;
-	
 	if (isDraggingEndPoint) {
 		endPoint = ofPoint(mouseX, mouseY);
 		shouldUpdateTriangle = true;
@@ -12,7 +10,7 @@ void ofApp::update(){
 		startPoint = ofPoint(mouseX, mouseY);
 		shouldUpdateTriangle = true;
 	}
-	if (shouldUpdateTriangle || hasWindowResized) {
+	if (shouldUpdateTriangle) {
 		bisectingLine.clear();
 		bisectingLine.addVertex(startPoint.x, startPoint.y);
 		bisectingLine.addVertex(endPoint.x, endPoint.y);
@@ -27,7 +25,7 @@ void ofApp::update(){
 		lineSlope = (endPoint.x - startPoint.x) / (endPoint.y - startPoint.y);
 		lineIntercept = endPoint.x - (lineSlope*endPoint.y);
 
-		if (hasWindowResized) hasWindowResized = false;
+		if (shouldUpdateTriangle) shouldUpdateTriangle = false;
 	}
 	else if (isDraggingBisectingLineLerpPoint) {
 		float max = MAX(startPoint.y, endPoint.y);
@@ -108,7 +106,7 @@ void ofApp::draw() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
+	if (key == 'r') reset();
 }
 
 //--------------------------------------------------------------
@@ -131,11 +129,11 @@ void ofApp::mousePressed(int x, int y, int button){
 	ofPoint clickedPoint = ofPoint(x, y);
 	ofPoint linePoint = ofPoint(lineSlope * y + lineIntercept, y);
 	// allow line clicks within a reasonable buffer distance
-	float maxDistance = LINE_WIDTH + LINE_CLICK_BUFFER;
-	if (endPoint.distance(clickedPoint) < POINT_RADIUS) {
+	float maxDistance = LINE_WIDTH + CLICK_BUFFER;
+	if (endPoint.distance(clickedPoint) < POINT_RADIUS + CLICK_BUFFER) {
 		isDraggingEndPoint = true;
 	}
-	else if (startPoint.distance(clickedPoint) < POINT_RADIUS) {
+	else if (startPoint.distance(clickedPoint) < POINT_RADIUS + CLICK_BUFFER) {
 		isDraggingStartPoint = true;
 	}
 	else if (linePoint.distance(clickedPoint) < maxDistance) {
@@ -174,7 +172,7 @@ void ofApp::windowResized(int w, int h){
 	windowWidth = w;
 	windowHeight = h;
 
-	hasWindowResized = true;
+	shouldUpdateTriangle = true;
 }
 
 //--------------------------------------------------------------
@@ -190,18 +188,21 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 //--------------------------------------------------------------  
 void ofApp::setup() {
-
 	ofBackground(ofColor::black);
+	ofSetFullscreen(false);
+	
+	reset();
+}
 
+//--------------------------------------------------------------  
+void ofApp::reset() {
 	windowWidth = ofGetWindowWidth();
 	windowHeight = ofGetWindowHeight();
 
 	// Arbitrary initial position for triangle
-	startPoint = ofPoint(windowWidth/8.0f, windowHeight/4.0f);
-	endPoint = ofPoint(windowWidth/2.0, windowHeight/1.5f);
+	startPoint = ofPoint(windowWidth / 8.0f, windowHeight / 4.0f);
+	endPoint = ofPoint(windowWidth / 2.0, windowHeight / 1.5f);
 
-	bisectingLine.addVertex(startPoint.x, startPoint.y);
-	bisectingLine.addVertex(endPoint.x, endPoint.y);
-
-	ofSetFullscreen(false);
+	shouldUpdateTriangle = true;
+	isBisectingLineLerpPointActive = false;
 }
